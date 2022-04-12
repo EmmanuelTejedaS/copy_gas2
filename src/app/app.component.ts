@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FirebaseauthService } from './servicios/firebaseauth.service';
+import { NotificationsService } from './servicios/notifications.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ export class AppComponent {
   admin = false;
 
   constructor(
-    private firebaseauthService: FirebaseauthService
+    private firebaseauthService: FirebaseauthService,
+    private notificationsService: NotificationsService
   ) {
     this.initializeApp();
   }

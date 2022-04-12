@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "157003710816",
+    "project_id": "mygasdomicilio",
+    "storage_bucket": "mygasdomicilio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157003710816:android:73d73128bdc5cd04989e05",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157003710816-0k6a25b6nlf6p6l2dr6nfisauvfj23og.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIiyV7UH19Ofrtk5WApmAUqVccpkwMkkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157003710816-0k6a25b6nlf6p6l2dr6nfisauvfj23og.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
