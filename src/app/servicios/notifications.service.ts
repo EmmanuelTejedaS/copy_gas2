@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { FirebaseauthService } from './firebaseauth.service';
@@ -66,6 +67,7 @@ export class NotificationsService {
       PushNotifications.addListener('registration',
         (token: Token) => {
           alert('Push registration success, token: ' + token.value);
+          this.guadarToken(token.value);
         }
       );
 
@@ -104,8 +106,22 @@ export class NotificationsService {
   addListeners(){
   }
 
-  guadarToken(token: any){
+
+  async guadarToken(token: any){
+
+    const Uid = await this.firebaseauthService.getUid();
+
+    if (Uid) {
+        console.log('guardar Token Firebase ->', Uid);
+        const path = '/Clientes/';
+        const userUpdate = {
+          token,
+        };
+        this.firestoreService.updateDoc(userUpdate, path, Uid);
+        console.log('guardar TokenFirebase()->', userUpdate, path, Uid);
+    }
   }
+
 
   async presentToast() {
     const toast = await this.toastController.create({
