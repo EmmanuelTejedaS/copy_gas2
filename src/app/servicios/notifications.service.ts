@@ -122,6 +122,37 @@ export class NotificationsService {
     }
   }
 
+  newNotication() {
+
+    const receptor = '6Ee6ylrqRbeokH6CoQTOoDFfok83';
+    const path = 'Clientes/';
+    this.firestoreService.getDoc<any>(path, receptor).subscribe( res => {
+          if (res) {
+              const token = res.token;
+              const dataNotification = {
+                enlace: '/mis-pedidos',
+              };
+              const notification = {
+                title: 'Mensaje enviado manuelmente',
+                body: 'Hola'
+              };
+              const data: INotification = {
+                    data: dataNotification,
+                    tokens: [token],
+                    notification,
+              };
+              const url = 'https://us-central1-mygasdomicilio.cloudfunctions.net/newNotification';
+              // eslint-disable-next-line @typescript-eslint/no-shadow
+              return this.http.post<Res>(url, {data}).subscribe( res => {
+                    console.log('respuesta newNotication() -> ', res);
+              });
+          }
+
+    });
+
+
+}
+
 
   async presentToast() {
     const toast = await this.toastController.create({
@@ -131,4 +162,15 @@ export class NotificationsService {
     toast.present();
   }
 
+}
+
+interface INotification {
+  data: any;
+  tokens: string[];
+  notification: any;
+}
+
+
+interface Res {
+  respuesta: string;
 }

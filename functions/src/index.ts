@@ -7,6 +7,12 @@ const firestore = admin.firestore();
 
 const uidAdmin = 'UwDgg5grfeWxvKVfqpuImy7UPTF3';
 
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cors = require('cors')({
+  origin: true,
+});
+
 exports.newPedido = functions.firestore
     .document('/Clientes/{userId}/pedidos/{pedidoId}')
     .onCreate( async (event) => {
@@ -30,6 +36,34 @@ exports.newPedido = functions.firestore
         },
       // eslint-disable-next-line semi
       }
+      return sendNotification(notification);
+    });
+
+
+exports.eventPedido = functions.firestore
+    .document('/Clientes/{userId}/pedidos/{pedidoId}')
+    .onUpdate( async (event, eventContext) => {
+      const userUid = eventContext.params.userId;
+      const pedido = event.after.data();
+      const dataFcm = {
+        enlace: '/mis-pedidos',
+      };
+
+      const path = '/Clientes/' + userUid;
+      const docInfo = await firestore.doc(path).get();
+      const dataUser = docInfo.data() as any;
+      const token = dataUser.token;
+      const registrationTokens = [token];
+
+      const notification: INotification = {
+        data: dataFcm,
+        tokens: registrationTokens,
+        notification: {
+          title: 'Seguimiento de tu pedido',
+          body: 'Pedido ' + pedido.estado,
+        },
+      };
+
       return sendNotification(notification);
     });
 
@@ -84,6 +118,30 @@ const sendNotification = (notification: INotification) => {
 };
 
 
+// eslint-disable-next-line max-len
+export const newNotification = functions.https.onRequest((request, response) => {
+  return cors(request, response, async () => {
+    if (request.body.data) {
+      const notification = request.body.data as INotification;
+      await sendNotification(notification);
+      const res: Res = {
+        respuesta: 'success',
+      };
+      response.status(200).send(res);
+    } else {
+      const res = {
+        respuesta: 'error',
+      };
+      response.status(200).send(res);
+    }
+  });
+});
+
+// eslint-disable-next-line max-len
+exports.cincominutos = functions.pubsub.schedule('every 5 minutes').onRun((context) => {
+  console.log('5 minutos!');
+  return null;
+});
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //
@@ -91,6 +149,10 @@ const sendNotification = (notification: INotification) => {
 //   functions.logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+interface Res {
+  respuesta: string;
+}
+
 interface INotification {
     data: any;
     tokens: string[];

@@ -6,6 +6,8 @@ import { Producto } from 'src/app/models';
 import { FirestorageService } from '../../servicios/firestorage.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
+import { NotificationsService } from '../../servicios/notifications.service';
+import { newNotification } from '../../../../functions/src/index';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +21,8 @@ export class HomeComponent implements OnInit {
   productos: Producto[] = [];
 
   constructor(public menu: MenuController,
-              public firestoreService: FirestoreService) {
+              public firestoreService: FirestoreService,
+              public notificationsService: NotificationsService) {
 
                 this.loadProductos();
 
@@ -38,6 +41,10 @@ export class HomeComponent implements OnInit {
       this.productos = res;
       //console.log('productos', res);
     });
+}
+
+sendNotification() {
+  this.notificationsService.newNotication();
 }
 
 }
