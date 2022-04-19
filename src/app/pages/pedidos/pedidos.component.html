@@ -45,6 +45,13 @@
           </p>
       </ion-label>
     </ion-item>
+    <ion-item>
+      <ion-label>cambiar estado del pedido</ion-label>
+      <ion-select (ionChange)="cambiarEstado(pedido, $event)" [value]="pedido.estado" okText="ok" cancelText="cancelar" interface="popover" placeholder="seleccciona uno">
+        <ion-select-option *ngFor="let estado of estados" [value]="estado">{{estado}}</ion-select-option>
+        
+      </ion-select>
+    </ion-item>
     <app-itemcarrito *ngFor="let producto of pedido.productos"  
     [productoPedido]="producto" [botones]=false></app-itemcarrito>
   </ion-card>

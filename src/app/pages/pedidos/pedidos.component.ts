@@ -4,7 +4,7 @@ import { MenuController } from '@ionic/angular';
 import { FirestoreService } from '../../servicios/firestore.service';
 import { FirebaseauthService } from '../../servicios/firebaseauth.service';
 import { Subscription } from 'rxjs';
-import { Pedido } from '../../models';
+import { Pedido, EstadoPedido } from '../../models';
 
 @Component({
   selector: 'app-pedidos',
@@ -19,6 +19,8 @@ export class PedidosComponent implements OnInit, OnDestroy {
   pedidosEntregados: Pedido[] = [];
 
   nuevos = true;
+
+  estados: EstadoPedido[] = [ 'enviado', 'visto', 'camino', 'entregado'];
 
   constructor(public menu: MenuController,
     public firestoreService: FirestoreService,
@@ -97,6 +99,18 @@ export class PedidosComponent implements OnInit, OnDestroy {
     }
 }
 
+cambiarEstado(pedido: Pedido, event: any){
+  const estadoP = event.detail.value;
+  console.log('cambiar estado', estadoP);
+    const path = 'Clientes/' + pedido.cliente.uid + '/pedidos/';
+    const updateDoc = {
+      estado: estadoP,
+    };
+    const id = pedido.id;
+    this.firestoreService.updateDoc(updateDoc,path,id).then(  () => {
+      console.log('actualizado con exito');
+    });
 
+  }
 
 }
