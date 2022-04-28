@@ -9,6 +9,8 @@ import { FirestoreService } from './firestore.service';
 import { promise } from 'protractor';
 import { Observable, Subject, Subscription } from 'rxjs';
 
+import { ToastController } from '@ionic/angular';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +28,8 @@ export class CarritoService {
 
   constructor(public firebaseauthService: FirebaseauthService,
               public firestoreService: FirestoreService,
-              public router: Router) {
+              public router: Router,
+              public toastController: ToastController) {
 
     this.initCarrito();
     this.firebaseauthService.stateAuth().subscribe( res => {
@@ -108,6 +111,7 @@ loadCliente(){
   const path = 'Clientes/' + this.uid + '/' + this.path;
   this.firestoreService.createDoc(this.pedido, path, this.uid).then( () => {
           console.log('añadido con exito');
+          this.toastAgregar();
   });
  }
 
@@ -128,6 +132,7 @@ loadCliente(){
                 const path = 'Clientes/' + this.uid + '/' + this.path;
                 this.firestoreService.createDoc(this.pedido, path, this.uid).then( () => {
                     console.log('removido con exito');
+                    this.toastBorrar();
                 });
             }
         }
@@ -144,5 +149,21 @@ loadCliente(){
       this.initCarrito();
   });
  }
+
+ async toastAgregar() {
+  const toast = await this.toastController.create({
+    message: 'se agrego con exito',
+    duration: 2000
+  });
+  toast.present();
+}
+
+async toastBorrar() {
+  const toast = await this.toastController.create({
+    message: 'producto eliminado con exito',
+    duration: 2000
+  });
+  toast.present();
+}
 
 }

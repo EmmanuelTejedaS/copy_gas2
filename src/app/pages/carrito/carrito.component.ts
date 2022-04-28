@@ -5,6 +5,10 @@ import { Pedido } from '../../models';
 import { CarritoService } from '../../servicios/carrito.service';
 import { Subscription } from 'rxjs';
 import { FirebaseauthService } from '../../servicios/firebaseauth.service';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-carrito',
@@ -22,7 +26,10 @@ export class CarritoComponent implements OnInit, OnDestroy {
   constructor(public menu: MenuController,
               public firestoreService: FirestoreService,
               public carritoService: CarritoService,
-              public firebaseauthService: FirebaseauthService) {
+              public firebaseauthService: FirebaseauthService,
+              public httpClientModule: HttpClientModule,
+              public alertController: AlertController,
+              public toastController: ToastController) {
 
                 this.initCarrito();
                 this.loadPedido();
@@ -81,6 +88,7 @@ getCantidad(){
 async pedir(){
   if (!this.pedido.productos.length) {
     console.log('añade items al carrito');
+    this.toastAñadeAlCarrito();
     return;
   }
   this.pedido.fecha = new Date();
@@ -94,6 +102,55 @@ async pedir(){
     console.log('guadado con exito');
          this.carritoService.clearCarrito();
   });
+}
+
+tarjeta(amount: any){
+  console.log('tarjeta', amount);
+}
+
+async presentAlert() {
+  const alert = await this.alertController.create({
+    header: 'Finalizar compra',
+    subHeader: 'quieres terminar el pedido',
+    message: 'pagaras en efectivo cuando el repartidor llegue a tu casa',
+    buttons: [
+      {
+      text: 'NO',
+      handler: ()=>{
+        this.toastNo();
+        console.log('NO');
+      }
+    },
+    {
+      text: 'SI',
+      handler: ()=>{
+        this.pedir();
+        console.log('se agrego con exito :)');
+      }
+    }
+    ]
+  });
+
+  await alert.present();
+
+  const { role } = await alert.onDidDismiss();
+  console.log('onDidDismiss resolved with role', role);
+}
+
+async toastNo() {
+  const toast = await this.toastController.create({
+    message: 'hay mas productos por elegir',
+    duration: 2000
+  });
+  toast.present();
+}
+
+async toastAñadeAlCarrito() {
+  const toast = await this.toastController.create({
+    message: 'agrega productos al carrito para continuar',
+    duration: 2000
+  });
+  toast.present();
 }
 
 }

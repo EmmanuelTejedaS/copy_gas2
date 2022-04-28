@@ -26,7 +26,7 @@ export class ComentariosComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('producto', this.producto);
-    //this.loadCommentarios();
+    this.loadCommentarios();
   }
 
   ngOnDestroy(): void {
@@ -38,6 +38,9 @@ export class ComentariosComponent implements OnInit, OnDestroy {
 
   closeModal() {
     this.modalController.dismiss();
+     if (this.suscriber) {
+       this.suscriber.unsubscribe();
+    }
 }
 
 
@@ -48,12 +51,12 @@ loadCommentarios() {
     startAt = this.comentarios[ this.comentarios.length - 1].fecha;
 }
   const path = 'productos/' +  this.producto.id + '/comentarios';
-  this.suscriber = this.firestoreService.getCollectionPaginada<Comentario>(path, 2, startAt).subscribe( res => {
+  this.suscriber = this.firestoreService.getCollectionPaginada<Comentario>(path,2, startAt).subscribe( res => {
     if(res.length){
       res.forEach(comentario => {
+        console.log('a',comentario);
         const exist = this.comentarios.find( comentExist => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          comentExist.id === comentario.id;
+         console.log('esto imprime',comentExist);
         });
         if(exist === undefined){
           this.comentarios.push(comentario);
@@ -61,6 +64,9 @@ loadCommentarios() {
       });
      // this.comentarios = res;
       console.log(res);
+      if (this.suscriber) {
+        this.suscriber.unsubscribe();
+     }
     }
   });
 }

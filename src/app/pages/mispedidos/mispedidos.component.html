@@ -39,7 +39,7 @@
     <ion-label class="normal">
         Estado : {{pedido.estado}}
         <p>
-          fecha: {{pedido.fecha.seconds | date }}
+          fecha: {{pedido.fecha.seconds*1000 | date}}
         </p>
     </ion-label>
   </ion-item>

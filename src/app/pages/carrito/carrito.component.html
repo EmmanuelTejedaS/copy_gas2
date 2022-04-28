@@ -1,4 +1,5 @@
 <ion-header>
+  <script src="https://js.stripe.com/v3/"></script>
   <ion-toolbar>
           <ion-title class="subtitulo ion-text-wrap">
            Carrito
@@ -42,8 +43,11 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="pedir()" expand="full" class="normal" style="color: white ! important">
-          Pedir
+        <ion-button (click)="presentAlert()" expand="full" class="normal" style="color: white ! important">
+          Pagar en efectivo
+        </ion-button>
+        <ion-button id="checkout-button" (click)="tarjeta(10)" expand="full" class="normal" style="color: white ! important">
+          Pagar con tarjeta
         </ion-button>
       </ion-col>
     </ion-row>
