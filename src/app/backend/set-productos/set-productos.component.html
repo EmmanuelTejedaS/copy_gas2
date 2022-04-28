@@ -18,28 +18,19 @@
 <ion-content>
 
     <div style="text-align:end; margin: 10px;">
-        <ion-button (click)="nuevo()" style="margin: 10px;" color="dark" >nuevo</ion-button>
+        <ion-button (click)="nuevo()" style="margin: 10px;" color="dark" >agregar nuevo producto</ion-button>
     </div>
 
     <div *ngIf="enableNewProductos">
 
-        <ion-item>
-            <ion-buttons slot="end">
-              <ion-button (click)="enableNewProductos = false">
-                <ion-icon slot="icon-only" name="close"></ion-icon>
-              </ion-button>
-               <ion-button (click)="guardarProducto() ">
-                <ion-icon color="primary" slot="icon-only" name="save-sharp"></ion-icon>
-                </ion-button>
-            </ion-buttons>
-          </ion-item>
+        
           <h3 class="subtitulo encabezado">Ingrese datos del producto</h3>
     
         <ion-item>
             <ion-label class="normal" position="floating">
                     Nombre:
             </ion-label>
-            <ion-input [(ngModel)]="newProducto.nombre"  class="normal" type="text" inputmode="text">
+            <ion-input [(ngModel)]="newProducto.nombre"  class="normal" type="text" inputmode="text" required="true">
             </ion-input>
         </ion-item>
     
@@ -47,7 +38,7 @@
             <ion-label class="normal" position="floating">
                     Precio:
             </ion-label>
-            <ion-input [(ngModel)]="newProducto.precioNormal" class="normal" type="number" inputmode="numeric">
+            <ion-input [(ngModel)]="newProducto.precioNormal" class="normal" type="number" inputmode="numeric" required="true">
             </ion-input>
         </ion-item>
     
@@ -55,7 +46,7 @@
             <ion-label class="normal" position="floating">
                     Precio reducido:
             </ion-label>
-            <ion-input [(ngModel)]="newProducto.precioReducido" class="normal" type="number" inputmode="numeric">
+            <ion-input [(ngModel)]="newProducto.precioReducido" class="normal" type="number" inputmode="numeric" required="true">
             </ion-input>
         </ion-item>
     
@@ -68,7 +59,7 @@
                 <label for="file-upload">
                   <ion-icon slot="icon-only" name="images"></ion-icon>
                 </label>
-                 <input (change)="newImageUpload($event)" id="file-upload" style="display: none" type="file"  accept="image/*">
+                 <input (change)="newImageUpload($event)" id="file-upload" style="display: none" type="file"  accept="image/*" required="true">
              </ion-button>
           </ion-buttons>
         
@@ -78,15 +69,30 @@
             <img class="image" [src]="newProducto.foto">
           </ion-item>
 
+          <ion-item>
+            <ion-buttons slot="end">
+                <ion-label class="normal"> Cancelar </ion-label>
+              <ion-button (click)="enableNewProductos = false">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+              </ion-button>
+              <ion-label class="normal"> Guardar producto</ion-label>
+               <ion-button (click)="guardarProducto() ">
+                <ion-icon color="primary" slot="icon-only" name="save-sharp"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+          </ion-item>
+
     </div>
 
 
    
 
 
+    <div class="d">
+        <ion-label slot="end" class="titulo"> lista de productos</ion-label>
+    </div>
 
-
-    <ion-item *ngFor="let producto of productos">
+    <ion-item *ngFor="let producto of productos " >
         <ion-label class="normal">{{producto.nombre}}</ion-label>
         <ion-buttons slot="end">
             <ion-button (click)="newProducto = producto; enableNewProductos=true;">

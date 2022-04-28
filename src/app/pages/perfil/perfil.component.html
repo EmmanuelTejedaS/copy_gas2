@@ -79,7 +79,7 @@
 
   <div *ngIf="uid.length">
 
-    <h3 class="subtitulo encabezado">tus datos 1</h3>
+    <h3 class="subtitulo encabezado">Editar Perfil</h3>
     <ion-item>
       <ion-label class="normal">
               Email: {{cliente.email}}
@@ -90,6 +90,12 @@
     <ion-label class="normal">
             Celular: {{cliente.celular}}
     </ion-label>
+</ion-item>
+
+<ion-item>
+  <ion-label class="sucess" >
+         solo puedes editar los siguientes datos
+  </ion-label>
 </ion-item>
 
   <ion-item>
@@ -111,7 +117,7 @@
 
   <ion-item>
       <ion-label class="normal">
-              foto referencial:
+              foto referencial del domicilio:
       </ion-label>
     <ion-buttons slot="end">
       <ion-button>
@@ -129,10 +135,10 @@
     </ion-item>
 
     <div style="text-align:end; margin: 10px;">
-      <ion-button (click)="guardarUser()" style="margin: 10px;" color="dark" >guardar</ion-button>
+      <ion-button (click)="guardarUser()" expand="block" style="margin: 10px;" color="dark" >actualizar perfil</ion-button>
    </div>
     <div style="text-align:end; margin: 10px;">
-      <ion-button (click)="salir()" style="margin: 10px;" color="dark" >salir</ion-button>
+      <ion-button (click)="presentAlert()" expand="block" style="margin: 10px;" color="danger" >cerrar sesion</ion-button>
    </div>
 
   </div>

@@ -47,18 +47,27 @@ export class SetProductosComponent implements OnInit {
   }
 
   async guardarProducto() {
-    this.presentLoading();
+    //this.presentLoading();
     const path = 'productos';
     const name = this.newProducto.nombre;
+    const precio = this.newProducto.precioNormal;
+    const precior = this.newProducto.precioReducido;
+    const foto = this.newProducto.foto;
+    if(name.length && foto.length && precio && precior){
+    this.presentLoading();
     const res = await this.firestorageService.uploadImage(this.newFile, path, name);
     this.newProducto.foto = res;
     // eslint-disable-next-line @typescript-eslint/no-shadow
     this.firestoreService.createDoc(this.newProducto, this.path, this.newProducto.id).then( res => {
       this.loading.dismiss();
       this.presentToast('guardado con exito');
+      this.nuevo();
     }).catch(   error => {
       this.presentToast('error al guardar');
-    });
+    });}else{
+      //this.loading.dismiss();
+      this.presentToast('agrega los datos del producto ');
+    }
   }
 
   getProductos(){
@@ -88,6 +97,7 @@ export class SetProductosComponent implements OnInit {
           handler: () => {
             console.log('Confirm Okay');
             this.firestoreService.deleteDoc(this.path, producto.id).then( res => {
+              this.nuevo();
               this.presentToast('eliminado con exito');
               this.alertController.dismiss();
             }).catch( error => {

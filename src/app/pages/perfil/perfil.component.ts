@@ -6,6 +6,9 @@ import { FirestorageService } from '../../servicios/firestorage.service';
 import { FirestoreService } from '../../servicios/firestore.service';
 import { Subscription } from 'rxjs';
 
+import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
@@ -34,7 +37,9 @@ export class PerfilComponent implements OnInit {
   constructor(public menu: MenuController,
               public firebaseauthService: FirebaseauthService,
               public firestorageService: FirestorageService,
-              public firestoreService: FirestoreService) {
+              public firestoreService: FirestoreService,
+              public alertController: AlertController,
+              public toastController: ToastController) {
                 this.firebaseauthService.stateAuth().subscribe( res => {
                   console.log(res);
                   if (res !== null) {
@@ -138,6 +143,51 @@ ingresar(){
   this.firebaseauthService.login(credenciales.email, credenciales.password).then( res => {
     console.log('ingreso con exito');
 });
+}
+
+async presentAlert() {
+  const alert = await this.alertController.create({
+    header: 'cerrar sesion',
+    message: 'quieres cerrar la sesion?',
+    buttons: [
+      {
+      text: 'NO',
+      handler: ()=>{
+        this.toastContinuar();
+        console.log('NO');
+      }
+    },
+    {
+      text: 'SI',
+      handler: ()=>{
+        this.salir();
+        this.toastCerrarSesion();
+        console.log('gracias por comprar :)');
+      }
+    }
+    ]
+  });
+
+  await alert.present();
+
+  const { role } = await alert.onDidDismiss();
+  console.log('onDidDismiss resolved with role', role);
+}
+
+async toastCerrarSesion() {
+  const toast = await this.toastController.create({
+    message: 'se ha cerrrado la sesion',
+    duration: 2000
+  });
+  toast.present();
+}
+
+async toastContinuar() {
+  const toast = await this.toastController.create({
+    message: 'gracias por seguir comprando',
+    duration: 2000
+  });
+  toast.present();
 }
 
 }

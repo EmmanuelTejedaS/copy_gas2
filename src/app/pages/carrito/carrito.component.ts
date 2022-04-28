@@ -105,6 +105,7 @@ async pedir(){
 }
 
 tarjeta(amount: any){
+  this.toastAñadeAlCarrito();
   console.log('tarjeta', amount);
 }
 
@@ -148,6 +149,14 @@ async toastNo() {
 async toastAñadeAlCarrito() {
   const toast = await this.toastController.create({
     message: 'agrega productos al carrito para continuar',
+    duration: 2000
+  });
+  toast.present();
+}
+
+async toastTarjeta() {
+  const toast = await this.toastController.create({
+    message: 'proximamente',
     duration: 2000
   });
   toast.present();
