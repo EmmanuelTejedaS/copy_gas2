@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs';
 import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
@@ -39,7 +41,8 @@ export class PerfilComponent implements OnInit {
               public firestorageService: FirestorageService,
               public firestoreService: FirestoreService,
               public alertController: AlertController,
-              public toastController: ToastController) {
+              public toastController: ToastController,
+              private router: Router) {
                 this.firebaseauthService.stateAuth().subscribe( res => {
                   console.log(res);
                   if (res !== null) {
@@ -94,14 +97,18 @@ export class PerfilComponent implements OnInit {
       email: this.cliente.email,
       password: this.cliente.celular
     };
-   const res = await this.firebaseauthService.registrar(credenciales.email, credenciales.password).catch( err =>{
-     console.log('error->', err);
-    });
-   console.log(res);
-   const uid = await this.firebaseauthService.getUid();
-   this.cliente.uid = uid;
-   this.guardarUser();
-   console.log(uid);
+    if(credenciales.email.length && credenciales.password.length){
+      const res = await this.firebaseauthService.registrar(credenciales.email, credenciales.password).catch( err =>{
+        console.log('error->', err);
+       });
+      console.log(res);
+      const uid = await this.firebaseauthService.getUid();
+      this.cliente.uid = uid;
+      this.guardarUser();
+      console.log(uid);
+    }else{
+      this.toastSinDatos();
+    }
  }
 
  async guardarUser() {
@@ -113,6 +120,7 @@ export class PerfilComponent implements OnInit {
 }
   // eslint-disable-next-line @typescript-eslint/no-shadow
   this.firestoreService.createDoc(this.cliente, path, this.cliente.uid).then( res => {
+    this.router.navigate(['/home']);
       console.log('guardado con exito');
   }).catch(   error => {
   });
@@ -140,9 +148,16 @@ ingresar(){
     email: this.cliente.email,
     password: this.cliente.celular
   };
-  this.firebaseauthService.login(credenciales.email, credenciales.password).then( res => {
-    console.log('ingreso con exito');
-});
+  if(credenciales.email.length && credenciales.password.length){
+    this.firebaseauthService.login(credenciales.email, credenciales.password).then( res => {
+      this.router.navigate(['/home']);
+      console.log('ingreso con exito');
+  }).catch ( error =>{
+    this.datoserroneos();
+  });
+  }else{
+    this.toastregistrate();
+  }
 }
 
 async presentAlert() {
@@ -186,6 +201,32 @@ async toastContinuar() {
   const toast = await this.toastController.create({
     message: 'gracias por seguir comprando',
     duration: 2000
+  });
+  toast.present();
+}
+
+async toastregistrate() {
+  const toast = await this.toastController.create({
+    message: 'llena los campos para poder iniciar sesion',
+    duration: 2000
+  });
+  toast.present();
+}
+
+async toastSinDatos() {
+  const toast = await this.toastController.create({
+    message: 'llena los campos para continuar con el registro',
+    duration: 3000,
+    position: 'middle'
+  });
+  toast.present();
+}
+
+async datoserroneos() {
+  const toast = await this.toastController.create({
+    message: 'Tus datos no coinciden',
+    duration: 3000,
+    position: 'middle'
   });
   toast.present();
 }

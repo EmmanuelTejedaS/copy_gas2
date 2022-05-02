@@ -10,6 +10,7 @@ import { promise } from 'protractor';
 import { Observable, Subject, Subscription } from 'rxjs';
 
 import { ToastController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +25,14 @@ export class CarritoService {
 
   carritoSuscriber: Subscription;
   clienteSuscriber: Subscription;
+  loading: any;
 
 
   constructor(public firebaseauthService: FirebaseauthService,
               public firestoreService: FirestoreService,
               public router: Router,
-              public toastController: ToastController) {
+              public toastController: ToastController,
+              public loadingController: LoadingController) {
 
     this.initCarrito();
     this.firebaseauthService.stateAuth().subscribe( res => {
@@ -90,6 +93,7 @@ loadCliente(){
  }
 
  addProducto(producto: Producto){
+  this.presentLoading();
   console.log('addProducto ->', this.uid);
   if (this.uid.length) {
      const item = this.pedido.productos.find( productoPedido => (productoPedido.producto.id === producto.id));
@@ -151,6 +155,7 @@ loadCliente(){
  }
 
  async toastAgregar() {
+  //this.loading.dismiss();
   const toast = await this.toastController.create({
     message: 'se agrego con exito',
     duration: 2000
@@ -164,6 +169,17 @@ async toastBorrar() {
     duration: 2000
   });
   toast.present();
+}
+
+async presentLoading() {
+  this.loading = await this.loadingController.create({
+    cssClass: 'normal',
+    message: 'guardando...',
+    duration: 500
+  });
+  await this.loading.present();
+  //await loading.onDidDismiss();
+  //console.log('Loading dismissed!');
 }
 
 }

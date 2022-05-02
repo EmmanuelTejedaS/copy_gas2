@@ -4,17 +4,19 @@
     <ion-menu contentId="main" menuId="principal">
       <ion-header>
         <ion-toolbar>
-          <ion-title class="subtitulo">Menu</ion-title>
+          <ion-title class="subtitulo" *ngIf="admin">Menu admin</ion-title>
+          <ion-title class="subtitulo" *ngIf="!admin && repartidor">Menu repartidor</ion-title>
+          <ion-title class="subtitulo" *ngIf="!admin && !repartidor && usuario">Menu usuario</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <ion-menu-toggle autoHide=false>
+        <ion-menu-toggle autoHide=false *ngIf="admin || usuario">
           <ion-item  button=true detail=true [routerLink]="['/']" >
             <ion-label class="normal">Tienda</ion-label>
             <ion-icon slot="start"  name="storefront-outline"></ion-icon>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle autoHide=false>
+        <ion-menu-toggle autoHide=false *ngIf="admin || usuario">
           <ion-item  button=true detail=true [routerLink]="['/carrito']" >
             <ion-label class="normal">carrito</ion-label>
             <ion-icon slot="start"  name="cart-outline"></ion-icon>
@@ -26,19 +28,35 @@
             <ion-icon slot="start" name="create-outline"></ion-icon>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle autoHide="false" *ngIf="!admin">
+        <ion-menu-toggle autoHide="false" *ngIf="usuario">
           <ion-item button="true" detail="true" [routerLink]="['/mis-pedidos']" >
             <ion-label class="normal" >Mis pedidos</ion-label>
             <ion-icon slot="start" name="bag-add-outline"></ion-icon>
           </ion-item>
         </ion-menu-toggle>
         
-        <ion-menu-toggle autoHide="false" *ngIf="admin">
+        <ion-menu-toggle autoHide="false" *ngIf="!usuario">
           <ion-item button="true" detail="true" [routerLink]="['/pedidos']" >
             <ion-label class="normal" >pedidos</ion-label>
             <ion-icon slot="start" name="bag-add-outline"></ion-icon>
           </ion-item>
         </ion-menu-toggle>
+
+        
+        <ion-menu-toggle autoHide="false" *ngIf="admin">
+          <ion-item button="true" detail="true" [routerLink]="['/pedidos']" >
+            <ion-label class="normal" >clientes</ion-label>
+            <ion-icon slot="start" name="people-outline"></ion-icon>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <!-- <ion-menu-toggle autoHide="false" *ngIf="repartidor">
+          <ion-item button="true" detail="true" [routerLink]="['/perfil']" >
+            <ion-label class="normal" >Perfil de repartidor</ion-label>
+            <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+          </ion-item>
+        </ion-menu-toggle> -->
+
 
       </ion-content>
     </ion-menu>

@@ -68,11 +68,13 @@
         <img class="image" [src]="cliente.foto">
       </ion-item>
 
-      <div style="text-align:end; margin: 10px;">
-        <ion-button *ngIf="!ingresarEnable" (click)="registrarse()" style="margin: 10px;" color="dark" >registrarse</ion-button>
-        <ion-button *ngIf="!ingresarEnable" (click)="ingresarEnable = true" style="margin: 10px;" color="dark" >o ingresar</ion-button>
-        <ion-button *ngIf="ingresarEnable" (click)="ingresar()" style="margin: 10px;" color="dark" >login</ion-button>
-        <ion-button *ngIf="ingresarEnable" (click)="ingresarEnable = false" style="margin: 10px;" color="dark" >o registrarse</ion-button>
+      <div >
+        <ion-button *ngIf="!ingresarEnable" (click)="registrarse()" expand="block" >Registrarme </ion-button>
+        <ion-button *ngIf="ingresarEnable" (click)="ingresar()" expand="block" >Iniciar sesion</ion-button>
+      </div>
+      <div>
+        <ion-button *ngIf="!ingresarEnable" (click)="ingresarEnable = true" expand="block" color="dark">ya tienes una cuenta, Inicia sesion aqui !</ion-button>
+        <ion-button *ngIf="ingresarEnable" (click)="ingresarEnable = false" expand="block" color="dark" >NO tienes una cuenta? Registrate aqui !</ion-button>   
     </div>
 
   </div>
@@ -94,6 +96,7 @@
 
 <ion-item>
   <ion-label class="sucess" >
+    <ion-icon color="sucess" name="warning-outline"></ion-icon>
          solo puedes editar los siguientes datos
   </ion-label>
 </ion-item>
