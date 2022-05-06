@@ -66,7 +66,7 @@ export class NotificationsService {
       // On success, we should be able to receive notifications
       PushNotifications.addListener('registration',
         (token: Token) => {
-          alert('Push registration success, token: ' + token.value);
+         // alert('Push registration success, token: ' + token.value);
           this.guadarToken(token.value);
         }
       );
@@ -74,14 +74,14 @@ export class NotificationsService {
       // Some issue with our setup and push will not work
       PushNotifications.addListener('registrationError',
         (error: any) => {
-          alert('Error on registration: ' + JSON.stringify(error));
+         // alert('Error on registration: ' + JSON.stringify(error));
         }
       );
 
       // Show us the notification payload if the app is open on our device
       PushNotifications.addListener('pushNotificationReceived',
         (notification: PushNotificationSchema) => {
-          alert('Push received ffffff: ' + JSON.stringify(notification));
+          //alert('Push received ffffff: ' + JSON.stringify(notification));
           this.presentToast();
         }
       );
@@ -89,7 +89,7 @@ export class NotificationsService {
       // Method called when tapping on a notification
       PushNotifications.addListener('pushNotificationActionPerformed',
         (notification: ActionPerformed) => {
-          alert('Push action performed hhhhh: ' + JSON.stringify(notification));
+          //alert('Push action performed hhhhh: ' + JSON.stringify(notification));
         }
       );
 

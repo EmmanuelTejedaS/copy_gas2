@@ -34,17 +34,46 @@
     </ion-segment>
 </div>
 
-<ion-card *ngFor="let pedido of pedidos" class="mt-5 mb-5">
-  <ion-item>
-    <ion-label class="normal">
-        Estado : {{pedido.estado}}
-        <p>
-          fecha: {{pedido.fecha.seconds*1000 | date}}
-        </p>
-    </ion-label>
-  </ion-item>
-  <app-itemcarrito *ngFor="let producto of pedido.productos"  
-  [productoPedido]="producto" [botones]=false></app-itemcarrito>
-</ion-card>
+<div *ngIf="nuevos">
+
+  <ion-card *ngFor="let pedido of pedidos" class="mt-5 mb-5">
+    <ion-item>
+      <ion-label class="normal">
+          Estado : {{pedido.estado}}
+          <p>
+            fecha: {{pedido.fecha.seconds*1000 | date}}
+          </p>
+      </ion-label>
+    </ion-item>
+    <app-itemcarrito *ngFor="let producto of pedido.productos"  
+    [productoPedido]="producto" [botones]=false></app-itemcarrito>
+  </ion-card>
+  <ion-button class="normal" (click)="cargarMas2()"> cargar más </ion-button>
+  
+</div>
+
+<div *ngIf="!nuevos">
+
+  <ion-card *ngFor="let pedido of pedidosEntregados" class="mt-5 mb-5">
+    <ion-item>
+      <ion-label class="normal">
+        
+        <p>nombre del cliente: {{pedido.cliente.nombre}}</p>
+        <p>total: {{pedido.precioTotal}}</p>
+
+          Estado : {{pedido.estado}}
+          <p>
+            fecha: {{pedido.fecha.seconds*1000 | date }}
+          </p>
+      </ion-label>
+    </ion-item>
+    <app-itemcarrito *ngFor="let producto of pedido.productos"  
+    [productoPedido]="producto" [botones]=false></app-itemcarrito>
+  </ion-card>
+  <ion-button class="normal" (click)="cargarMas()"> cargar más </ion-button>
+</div>
+
+
+
 
 </ion-content>

@@ -43,6 +43,18 @@ export class FirestoreService {
     return collection.valueChanges();
   }
 
+  getCollectionQuery2<tipo>(path: string, parametro: string, condicion: any, busqueda: string, startAt: any){
+    if (startAt == null) {
+      startAt = new Date();
+    }
+    const collection = this.database.collection<tipo>(path,
+      ref  => ref.where(parametro, condicion, busqueda)
+      .orderBy('fecha', 'desc')
+      .limit(2)
+      .startAfter(startAt));
+    return collection.valueChanges();
+  }
+
   getCollectionAll<tipo>(path: string, parametro: string, condicion: any, busqueda: string, startAt: any){
     if (startAt == null) {
       startAt = new Date();

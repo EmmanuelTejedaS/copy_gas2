@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, ToastController, AlertController } from '@ionic/angular';
 import { FirestoreService } from '../../servicios/firestore.service';
 import { Producto } from 'src/app/models';
 import { FirestorageService } from '../../servicios/firestorage.service';
@@ -10,6 +10,8 @@ import { NotificationsService } from '../../servicios/notifications.service';
 import { newNotification } from '../../../../functions/src/index';
 import { FirebaseauthService } from '../../servicios/firebaseauth.service';
 import { Router } from '@angular/router';
+import { IonRouterOutlet, Platform } from '@ionic/angular';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-home',
@@ -27,10 +29,15 @@ export class HomeComponent implements OnInit {
               public firestoreService: FirestoreService,
               public notificationsService: NotificationsService,
               private firebaseauthService: FirebaseauthService,
-              private router: Router) {
+              private router: Router,
+              private platform: Platform,
+              private routerOutlet: IonRouterOutlet,
+              public alertController: AlertController,
+              private toastController: ToastController) {
 
                 this.loadProductos();
 
+                this.bntExit();
 
    }
 
@@ -84,5 +91,49 @@ getUid() {
 //         }
 //   });
 // }
+
+async bntExit(){
+  this.platform.backButton.subscribeWithPriority(-1, () => {
+    if (!this.routerOutlet.canGoBack()) {
+      this.saliste();
+      //App.exitApp();
+    }
+  });
+}
+
+async saliste() {
+  const alert = await this.alertController.create({
+    header: 'salir',
+    message: 'quieres salir de la app?',
+    buttons: [
+      {
+      text: 'NO',
+      handler: ()=>{
+        this.toastNo();
+        console.log('NO');
+      }
+    },
+    {
+      text: 'SI',
+      handler: ()=>{
+        App.exitApp();
+      }
+    }
+    ]
+  });
+
+  await alert.present();
+
+  const { role } = await alert.onDidDismiss();
+  console.log('onDidDismiss resolved with role', role);
+}
+
+async toastNo() {
+  const toast = await this.toastController.create({
+    message: 'gracias por comprar',
+    duration: 2000
+  });
+  toast.present();
+}
 
 }
