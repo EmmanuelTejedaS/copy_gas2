@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { NotificationsService } from '../../servicios/notifications.service';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 
 @Component({
   selector: 'app-carrito',
@@ -26,10 +28,12 @@ export class CarritoComponent implements OnInit, OnDestroy {
   constructor(public menu: MenuController,
               public firestoreService: FirestoreService,
               public carritoService: CarritoService,
+              public notificationsService: NotificationsService,
               public firebaseauthService: FirebaseauthService,
               public httpClientModule: HttpClientModule,
               public alertController: AlertController,
-              public toastController: ToastController) {
+              public toastController: ToastController,
+              private iab: InAppBrowser) {
 
                 this.initCarrito();
                 this.loadPedido();
@@ -105,8 +109,10 @@ async pedir(){
 }
 
 tarjeta(amount: any){
-  this.toastAñadeAlCarrito();
-  console.log('tarjeta', amount);
+  //this.toastAñadeAlCarrito();
+  console.log('tarjeta 4', amount);
+  this.notificationsService.stripe();
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 }
 
 async presentAlert() {

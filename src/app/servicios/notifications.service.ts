@@ -9,6 +9,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+
 
 import {
   ActionPerformed,
@@ -28,7 +30,8 @@ export class NotificationsService {
     public firestoreService: FirestoreService,
     private router: Router,
     private http: HttpClient,
-    public toastController: ToastController) {
+    public toastController: ToastController,
+    private iab: InAppBrowser) {
       this.stateUser();
       //this.inicializar();
     }
@@ -154,6 +157,32 @@ export class NotificationsService {
 }
 
 
+stripe() {
+
+  const dataNotification = {
+    enlace: '/mis-pedidos',
+  };
+  const notification = {
+    title: 'Mensaje enviado manuelmente',
+    body: 'Hola'
+  };
+  const data: stripe = {
+    data: dataNotification,
+    notification,
+};
+
+  const url = 'https://us-central1-mygasdomicilio.cloudfunctions.net/stripeCheckout4';
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  return this.http.post<Res1>(url, {data}).subscribe( res => {
+        console.log('respuesta newNotication() --> ', res);
+        console.log('link',res.result);
+
+        this.iab.create(res.result);
+
+  });
+
+}
+
   async presentToast() {
     const toast = await this.toastController.create({
       message: 'has ingresado con exito',
@@ -173,4 +202,13 @@ interface INotification {
 
 interface Res {
   respuesta: string;
+}
+
+interface stripe {
+  data: any;
+  notification: any;
+}
+
+interface Res1 {
+  result: string;
 }

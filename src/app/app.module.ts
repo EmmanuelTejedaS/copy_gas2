@@ -19,7 +19,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
-
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 
 
 
@@ -44,7 +44,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },InAppBrowser],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

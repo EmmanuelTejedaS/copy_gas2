@@ -1,6 +1,8 @@
+/* eslint-disable max-len */
 /* eslint-disable quotes */
 import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
+// import * as stripe from 'stripe';
 
 admin.initializeApp();
 const firestore = admin.firestore();
@@ -12,6 +14,11 @@ const uidAdmin = 'UwDgg5grfeWxvKVfqpuImy7UPTF3';
 const cors = require('cors')({
   origin: true,
 });
+
+// stripe
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const stripe = require('stripe')('sk_test_');
+// stripe final
 
 exports.newPedido = functions.firestore
     .document('/Clientes/{userId}/pedidos/{pedidoId}')
@@ -136,7 +143,42 @@ export const newNotification = functions.https.onRequest((request, response) => 
     }
   });
 });
+// nueva funcion stripe
 
+// eslint-disable-next-line max-len
+// exports.stripeCheckout = functions.https.onCall
+export const stripeCheckout4 = functions.https.onCall(async (data, context) =>{
+  const session = await stripe.checkout.sessions.create({
+    shipping_address_collection: {
+      allowed_countries: ["US"],
+    },
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'T-shirt',
+          },
+          unit_amount: 2000,
+        },
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: 'https://mygasdomicilio.web.app/',
+    cancel_url: 'https://mygasdomicilio.web.app/',
+  });
+  return session.url;
+});
+
+export const stripeWebhook = functions.https.onRequest(async (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  let event;
+});
+// nueva funcion stripe final
+// web hook
+
+// web hook final
 // eslint-disable-next-line max-len
 exports.cincominutos = functions.pubsub.schedule('every 5 minutes').onRun((context) => {
   console.log('5 minutos!');
