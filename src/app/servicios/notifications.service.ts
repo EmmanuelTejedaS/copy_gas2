@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
 import { FirebaseauthService } from './firebaseauth.service';
 import { FirestoreService } from './firestore.service';
 import { Router } from '@angular/router';
@@ -10,6 +10,9 @@ import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { Subscription } from 'rxjs';
+
+// import { CarritoComponent } from '../pages/carrito/carrito.component';
 
 
 import {
@@ -25,12 +28,15 @@ import {
 })
 export class NotificationsService {
 
+   nuevosSuscriber: Subscription;
+// public carritoComponent: CarritoComponent
   constructor(public platform: Platform,
     public firebaseauthService: FirebaseauthService,
     public firestoreService: FirestoreService,
     private router: Router,
     private http: HttpClient,
     public toastController: ToastController,
+    public modalController: ModalController,
     private iab: InAppBrowser) {
       this.stateUser();
       //this.inicializar();
@@ -183,6 +189,58 @@ stripe() {
 
 }
 
+
+async post1(total: any){
+  const Uid = await this.firebaseauthService.getUid();
+  console.log('id user', Uid);
+  console.log('codigo nuev');
+  const nombreProducto = 'aqui iria el nombre del producto';
+  const precioProducto = total;
+  const idUsuario = {
+    enlace: Uid,
+  };
+  const notification = {
+    title: nombreProducto,
+    body: precioProducto
+  };
+  const data: s = {
+    data: idUsuario,
+    notification,
+};
+  const url = 'https://us-central1-mygasdomicilio.cloudfunctions.net/stripeV1';
+  return this.http.post<result>(url, {data}).subscribe( result => {
+    console.log('res', result);
+    console.log('idSesion',result.id);
+      console.log('url',result.url);
+      console.log('idIntentoPay',result.idIntentoPay);
+
+      // obtener datos para observar y lo ue pide el get doc
+      const resApiStripe = result.idIntentoPay;
+      const path = 'PagosTarjetaV2';
+      const id = resApiStripe;
+      // suascripcion para ver los datos si pago
+      this.nuevosSuscriber = this.firestoreService.getDoc<Pagos>(path,id).subscribe( res =>{
+        console.log('respuesta', res);
+        console.log('paymenStatus', res.paymenStatus);
+
+          if(res.paymenStatus === 'pagado'){
+            console.log('el vato pago');
+            console.log('codigo de que ya se compro');
+            // this.nuevosSuscriber.unsubscribe();
+              // this.carritoComponent.pedir();
+          }else{
+            console.log('aun no pagasd');
+          }
+
+      });
+
+      this.iab.create(result.url);
+});
+
+
+
+}
+
   async presentToast() {
     const toast = await this.toastController.create({
       message: 'has ingresado con exito',
@@ -208,6 +266,25 @@ interface stripe {
   data: any;
   notification: any;
 }
+
+interface s {
+  data: any;
+  notification: any;
+}
+
+interface Pagos {
+  paymenStatus: string;
+}
+
+interface r {
+  res: string;
+}
+// codigo nuevo
+interface result {
+  id: string;
+  url: string;
+  idIntentoPay: string;
+}// codigo nuevo
 
 interface Res1 {
   result: string;

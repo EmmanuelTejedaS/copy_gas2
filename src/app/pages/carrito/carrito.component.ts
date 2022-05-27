@@ -5,12 +5,13 @@ import { Pedido } from '../../models';
 import { CarritoService } from '../../servicios/carrito.service';
 import { Subscription } from 'rxjs';
 import { FirebaseauthService } from '../../servicios/firebaseauth.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders  } from '@angular/common/http';
 
 import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { NotificationsService } from '../../servicios/notifications.service';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-carrito',
@@ -24,6 +25,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
   carritoSuscriber: Subscription;
   total: number;
   cantidad: number;
+  nuevosSuscriber: Subscription;
 
   constructor(public menu: MenuController,
               public firestoreService: FirestoreService,
@@ -33,6 +35,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
               public httpClientModule: HttpClientModule,
               public alertController: AlertController,
               public toastController: ToastController,
+              private http: HttpClient,
               private iab: InAppBrowser) {
 
                 this.initCarrito();
@@ -115,6 +118,57 @@ tarjeta(amount: any){
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 }
 
+async post(){
+// this.notificationsService.post1(this.total);
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const Uid = await this.firebaseauthService.getUid();
+console.log('id user', Uid);
+console.log('codigo nuev');
+const nombreProducto = 'aqui iria el nombre del producto';
+const precioProducto = this.total;
+const idUsuario = {
+  enlace: Uid,
+};
+const notification = {
+  title: nombreProducto,
+  body: precioProducto
+};
+const data: s = {
+  data: idUsuario,
+  notification,
+};
+const url = 'https://us-central1-mygasdomicilio.cloudfunctions.net/stripeV1';
+return this.http.post<result>(url, {data}).subscribe( result => {
+  console.log('res', result);
+  console.log('idSesion',result.id);
+    console.log('url',result.url);
+    console.log('idIntentoPay',result.idIntentoPay);
+
+    // obtener datos para observar y lo ue pide el get doc
+    const resApiStripe = result.idIntentoPay;
+    const path = 'PagosTarjetaV2';
+    const id = resApiStripe;
+    // suascripcion para ver los datos si pago
+    this.nuevosSuscriber = this.firestoreService.getDoc<Pagos>(path,id).subscribe( res =>{
+      console.log('respuesta', res);
+      console.log('paymenStatus', res.paymenStatus);
+
+        if(res.paymenStatus === 'pagado'){
+          console.log('el vato pago');
+          console.log('codigo de que ya se compro');
+          // this.nuevosSuscriber.unsubscribe();
+            // this.carritoComponent.pedir();
+            this.pedir();
+        }else{
+          console.log('aun no pagasd');
+        }
+
+    });
+
+    this.iab.create(result.url);
+});
+}
+
 async presentAlert() {
   const alert = await this.alertController.create({
     header: 'Finalizar compra',
@@ -168,4 +222,19 @@ async toastTarjeta() {
   toast.present();
 }
 
+}
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface s {
+  data: any;
+  notification: any;
+}
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface result {
+  id: string;
+  url: string;
+  idIntentoPay: string;
+}// codigo nuevo
+
+interface Pagos {
+  paymenStatus: string;
 }
