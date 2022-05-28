@@ -26,6 +26,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
   total: number;
   cantidad: number;
   nuevosSuscriber: Subscription;
+  buscador: any;
 
   constructor(public menu: MenuController,
               public firestoreService: FirestoreService,
@@ -159,13 +160,14 @@ return this.http.post<result>(url, {data}).subscribe( result => {
           // this.nuevosSuscriber.unsubscribe();
             // this.carritoComponent.pedir();
             this.pedir();
+            this.buscador.close();
         }else{
           console.log('aun no pagasd');
         }
 
     });
 
-    this.iab.create(result.url);
+      this.buscador = this.iab.create(result.url);
 });
 }
 
